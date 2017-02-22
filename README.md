@@ -1,9 +1,3 @@
-payload
-=======
-
-A Symfony project created on February 22, 2017, 9:35 pm.
-
-
 # Zarządzanie poziomami błędów w Symfony
 
 [TOC]
@@ -91,5 +85,46 @@ additionalInfo
 ENTER x 5
 ```
 
+Załączamy walidator do naszej encji `src/AppBundle/Entity/Product.php`
 
+```
+use Symfony\Component\Validator\Constraints as Assert;
+```
 
+Oraz dodajemy proste walidatory do każdego z atrybutów:
+
+```
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="name", type="string", length=255)
+     * @Assert\NotBlank(
+     *     message="error.terrible",
+     *     payload = {"severity" = "error", "icon" = "skull"})
+     */
+    private $name;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="description", type="text", length=255)
+     * @Assert\NotBlank(
+     *     message="error.warning",
+     *     payload = {"severity" = "warning", "icon" = "alert"})
+     */
+    private $description;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="additional_info", type="string", length=255)
+     * @Assert\NotBlank(
+     *     message="error.info",
+     *     payload = {"severity" = "mistake", "icon" = "flag"})
+     */
+    private $additionalInfo;
+```
+
+To na co warto zwrócić uwagę to opcja `payload`. Jest to wielkość, która jest przekazywana do Twiga w formularzu wewnątrz informacji o naruszeniu danego `Constraina`. Pozwala ona modyfikować wygląd komunikatów o błędzie w sposób bardziej zaawansowany niż `message`. Nie posiada żadnej z góry określonej struktury, więc nasze `severity` oraz `icon` to mój własny sposób nazewnictwa. Domyślnie opcja `payload` nie wpływa w żaden sposób na wygląd formularza. Aby miała jakieś znaczenie trzeba zdefiniować je samodzielnie. Tym się teraz zajmiemy. 
+
+Zanim wyświetlimy formularz utworzymy go komendą:
